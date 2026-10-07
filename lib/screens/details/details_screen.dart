@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_image_gallery_app/core/app_colors.dart';
 import 'package:infinite_image_gallery_app/screens/details/components/image_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -8,11 +9,24 @@ import 'components/info_row.dart';
 import 'components/stat_item.dart';
 import 'details_vm.dart';
 
-class ImageDetailScreen extends StatelessWidget {
-  ImageDetailScreen({super.key, required this.hit});
+class ImageDetailScreen extends StatefulWidget {
+  const ImageDetailScreen({super.key, required this.hit});
 
-  final DetailsVm vm = DetailsVm();
   final Hits hit;
+
+  @override
+  State<StatefulWidget> createState() => _ImageDetailScreenState();
+}
+
+class _ImageDetailScreenState extends State<ImageDetailScreen> {
+  final DetailsVm vm = DetailsVm();
+  late final Hits hit;
+
+  @override
+  void initState() {
+    hit = widget.hit;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,31 +37,39 @@ class ImageDetailScreen extends StatelessWidget {
           SliverAppBar(
             pinned: true,
             expandedHeight: 60,
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.primary,
             foregroundColor: Colors.black,
+
             elevation: 0,
             title: const Text(
               'Image Details',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
             ),
             actions: [
-              IconButton(onPressed: () {
-                vm.onTapShare(hit, context);
-              }, icon: const Icon(Icons.share_outlined)),
+              IconButton(
+                onPressed: () {
+                  vm.onTapShare(hit, context);
+                },
+                icon: Icon(Icons.share_outlined, color: Colors.white),
+              ),
             ],
           ),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [ImageWidget(hit: hit), _buildContent(context)],
+              children: [
+                ImageWidget(hit: hit),
+                _buildContent(context),
+              ],
             ),
           ),
         ],
       ),
     );
   }
-
-
 
   Widget _buildContent(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -84,9 +106,7 @@ class ImageDetailScreen extends StatelessWidget {
                 return Column(
                   children: [
                     if (vm.isDownloading) ...[
-                      LinearProgressIndicator(
-                        value: vm.downloadProgress,
-                      ),
+                      LinearProgressIndicator(value: vm.downloadProgress),
 
                       const SizedBox(height: 8),
 
@@ -103,15 +123,11 @@ class ImageDetailScreen extends StatelessWidget {
                         onPressed: vm.isDownloading
                             ? null
                             : () {
-                          vm.downloadImage(
-                            hit.largeImageURL ??
-                                hit.webformatURL ??
-                                '',
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.download_outlined,
-                        ),
+                                vm.downloadImage(
+                                  hit.largeImageURL ?? hit.webformatURL ?? '',
+                                );
+                              },
+                        icon: const Icon(Icons.download_outlined),
                         label: Text(
                           vm.isDownloading
                               ? 'Downloading...'
@@ -123,12 +139,11 @@ class ImageDetailScreen extends StatelessWidget {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
   }
-
 
   Widget _buildUserSection(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -152,10 +167,7 @@ class ImageDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                hit.user ?? 'Unknown User',
-                style: textTheme.titleMedium,
-              ),
+              Text(hit.user ?? 'Unknown User', style: textTheme.titleMedium),
 
               const SizedBox(height: 4),
 
@@ -172,20 +184,13 @@ class ImageDetailScreen extends StatelessWidget {
     );
   }
 
-// ----------------------------------------------------------
-// DESCRIPTION
-// ----------------------------------------------------------
-
   Widget _buildDescription(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Description',
-          style: textTheme.titleLarge,
-        ),
+        Text('Description', style: textTheme.titleLarge),
 
         const SizedBox(height: 8),
 
@@ -201,10 +206,6 @@ class ImageDetailScreen extends StatelessWidget {
       ],
     );
   }
-
-// ----------------------------------------------------------
-// TAGS
-// ----------------------------------------------------------
 
   Widget _buildTags(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -222,10 +223,7 @@ class ImageDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Tags',
-          style: textTheme.titleLarge,
-        ),
+        Text('Tags', style: textTheme.titleLarge),
 
         const SizedBox(height: 10),
 
@@ -233,12 +231,14 @@ class ImageDetailScreen extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: tags.map((tag) {
-            return Chip(
-              label: Text(
-                tag,
-                style: textTheme.labelMedium,
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.primary),
+                borderRadius: BorderRadius.circular(5),
               ),
-              visualDensity: VisualDensity.compact,
+              child: Text(tag, style: textTheme.labelMedium),
             );
           }).toList(),
         ),
@@ -246,20 +246,13 @@ class ImageDetailScreen extends StatelessWidget {
     );
   }
 
-// ----------------------------------------------------------
-// STATISTICS
-// ----------------------------------------------------------
-
   Widget _buildStatistics(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Statistics',
-          style: textTheme.titleLarge,
-        ),
+        Text('Statistics', style: textTheme.titleLarge),
 
         const SizedBox(height: 12),
 
@@ -277,15 +270,36 @@ class ImageDetailScreen extends StatelessWidget {
               child: StatItem(
                 icon: Icons.download_outlined,
                 title: 'Downloads',
-                value:  vm.formatNumber(hit.downloads),
+                value: vm.formatNumber(hit.downloads),
               ),
             ),
 
             Expanded(
-              child: StatItem(
-                icon: Icons.favorite_border,
-                title: 'Likes',
-                value:  vm.formatNumber(hit.likes),
+              child: GestureDetector(
+                onTap: () {
+                  if (hit.isFavourite == true) {
+                    vm.favouriteViewModel.removeFavourite(hit.id!);
+                    hit.isFavourite = false;
+                    hit.likes = (hit.likes ?? 0) -1;
+                  } else {
+                    vm.favouriteViewModel.toggleFavourite(hit);
+                    hit.isFavourite = true;
+                    hit.likes = (hit.likes ?? 0) +1;
+                  }
+                  setState(() {
+
+                  });
+                },
+                child: StatItem(
+                  icon: hit.isFavourite == true
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  title: 'Likes',
+                  value: vm.formatNumber(hit.likes),
+                  colors: hit.isFavourite == true
+                      ? Colors.red
+                      : Colors.grey.shade700,
+                ),
               ),
             ),
           ],
@@ -299,7 +313,7 @@ class ImageDetailScreen extends StatelessWidget {
               child: StatItem(
                 icon: Icons.collections_outlined,
                 title: 'Collections',
-                value:  vm.formatNumber(hit.collections),
+                value: vm.formatNumber(hit.collections),
               ),
             ),
 
@@ -307,22 +321,16 @@ class ImageDetailScreen extends StatelessWidget {
               child: StatItem(
                 icon: Icons.comment_outlined,
                 title: 'Comments',
-                value:  vm.formatNumber(hit.comments),
+                value: vm.formatNumber(hit.comments),
               ),
             ),
 
-            const Expanded(
-              child: SizedBox(),
-            ),
+            const Expanded(child: SizedBox()),
           ],
         ),
       ],
     );
   }
-
-// ----------------------------------------------------------
-// IMAGE INFORMATION
-// ----------------------------------------------------------
 
   Widget _buildImageInformation(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -330,40 +338,20 @@ class ImageDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Image Information',
-          style: textTheme.titleLarge,
-        ),
+        Text('Image Information', style: textTheme.titleLarge),
 
         const SizedBox(height: 12),
 
-        InfoRow(
-          title: 'Image ID',
-          value: hit.id?.toString() ?? '-',
-        ),
+        InfoRow(title: 'Image ID', value: hit.id?.toString() ?? '-'),
 
-        InfoRow(
-          title: 'Type',
-          value: hit.type ?? '-',
-        ),
+        InfoRow(title: 'Type', value: hit.type ?? '-'),
 
-        InfoRow(
-          title: 'Dimensions',
-          value: vm.dimensions(hit),
-        ),
+        InfoRow(title: 'Dimensions', value: vm.dimensions(hit)),
 
-        InfoRow(
-          title: 'File Size',
-          value: vm.fileSize(hit),
-        ),
+        InfoRow(title: 'File Size', value: vm.fileSize(hit)),
 
-        InfoRow(
-          title: 'User ID',
-          value: hit.userId?.toString() ?? '-',
-        ),
+        InfoRow(title: 'User ID', value: hit.userId?.toString() ?? '-'),
       ],
     );
   }
-
-
 }

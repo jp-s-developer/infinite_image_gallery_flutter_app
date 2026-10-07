@@ -5,6 +5,7 @@ import 'package:infinite_image_gallery_app/model/gallery_base_model.dart';
 import '../../core/app_snack.dart';
 import '../../core/network/image_download_service.dart';
 import '../../core/network/image_share_service.dart';
+import '../favourite/favourite_vm.dart';
 
 class DetailsVm extends BaseVm {
   final shareService = ImageShareService();
@@ -12,6 +13,7 @@ class DetailsVm extends BaseVm {
   bool isDownloading = false;
   double downloadProgress = 0.0;
   String? downloadError;
+  FavouriteViewModel favouriteViewModel = FavouriteViewModel();
 
   void onTapShare(Hits hit, BuildContext context) async {
     try {

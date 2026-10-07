@@ -121,6 +121,9 @@ class AppTheme {
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
+      iconTheme: IconThemeData(
+        color: Colors.white,
+      ),
     ),
     cardTheme: CardThemeData(
       color: AppColors.surface,

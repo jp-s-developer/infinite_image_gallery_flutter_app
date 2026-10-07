@@ -6,20 +6,22 @@ class StatItem extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.value,
+    this.colors
   });
 
   final IconData icon;
   final String title;
   final String value;
+  final Color? colors;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Column(crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(
           icon,
           size: 22,
-          color: Colors.grey.shade700,
+          color: colors ??  Colors.grey.shade700,
         ),
 
         const SizedBox(height: 6),

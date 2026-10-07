@@ -19,12 +19,14 @@ class GalleryShimmer extends StatelessWidget {
 
     return SliverPadding(
       padding: const EdgeInsets.all(12),
-      sliver: SliverMasonryGrid.count(
+      sliver: SliverGrid.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: vm.getCrossAxisCount(context),
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-
-        childCount: itemCount,
+          childAspectRatio: 0.9,
+        ),
+        itemCount: itemCount,
         itemBuilder: (context, index) {
           return const _GalleryShimmerItem();
         },

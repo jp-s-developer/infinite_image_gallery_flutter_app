@@ -5,19 +5,20 @@ import 'package:infinite_image_gallery_app/model/gallery_base_model.dart';
 
 class ImageWidget extends StatelessWidget {
   final Hits hit;
-  const ImageWidget({super.key,required this.hit});
+
+  const ImageWidget({super.key, required this.hit});
 
   @override
   Widget build(BuildContext context) {
-    return  AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+    return Container(
       width: double.infinity,
       color: Colors.black,
-      child: Hero(
-        tag: '${hit.id}',
-        child: AspectRatio(
-          aspectRatio: _imageAspectRatio(),
-          child: CachedNetworkImage(
+      child: AspectRatio(
+        aspectRatio: _imageAspectRatio(),
+        child: Hero(
+          tag: 'image_${hit.id ?? ''}',
+          child:InteractiveViewer(
+            child: CachedNetworkImage(
             imageUrl: hit.largeImageURL ?? hit.webformatURL ?? '',
             fit: BoxFit.contain,
 
@@ -43,7 +44,7 @@ class ImageWidget extends StatelessWidget {
               );
             },
           ),
-        ),
+        ),),
       ),
     );
   }

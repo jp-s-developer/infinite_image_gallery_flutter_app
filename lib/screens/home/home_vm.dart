@@ -19,6 +19,7 @@ class HomeVm extends BaseVm {
  FavouriteViewModel favouriteViewModel = FavouriteViewModel();
 
   Future<void> onInitHome({String? search}) async {
+  await  favouriteViewModel.loadFavourites();
     imageList.clear();
     currentPage = 0;
     await fetchImages(search: search);
@@ -73,7 +74,23 @@ class HomeVm extends BaseVm {
 
 
   void moveToImageDetails(BuildContext context,
-      Hits hit,) {
-    context.pushNamed(AppRoutes.imageDetails,extra: hit);
+      Hits hit,) async {
+   await context.pushNamed('imageDetails',extra: hit);
+   for (var element in imageList) {
+     element.isFavourite = favouriteViewModel.isFavourite(element.id!);
+   }
+   debugPrint("move to favourite screen 3");
+   notifyListeners();
+  }
+
+  Future<void> moveToFavouriteScreen({required BuildContext context}) async{
+    debugPrint("move to favourite screen 1");
+    await context.pushNamed('favourite',extra: favouriteViewModel);
+    debugPrint("move to favourite screen 2");
+    for (var element in imageList) {
+      element.isFavourite = favouriteViewModel.isFavourite(element.id!);
+    }
+    debugPrint("move to favourite screen 3");
+    notifyListeners();
   }
 }

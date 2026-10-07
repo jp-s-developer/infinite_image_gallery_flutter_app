@@ -24,7 +24,7 @@ class _GalleryItemWidget extends State<GalleryItem> {
         children: [
           Positioned.fill(
             child: Hero(
-              tag: '${widget.image.id}',
+              tag: 'image_${widget.image.id ?? ''}', transitionOnUserGestures: true,
               child: CachedNetworkImage(
                 imageUrl: widget.image.webformatURL ?? '',
                 fit: BoxFit.cover,
@@ -72,7 +72,7 @@ class _GalleryItemWidget extends State<GalleryItem> {
                   setState(() {});
                 },
                 child: widget.image.isFavourite == true
-                    ? Icon(Icons.favorite, color: Colors.white, size: 20)
+                    ? Icon(Icons.favorite, color: Colors.red, size: 20)
                     : Icon(
                         Icons.favorite_border,
                         color: Colors.white,

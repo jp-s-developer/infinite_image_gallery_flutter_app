@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'favourite_vm.dart';
 
 class FavouriteScreen extends StatefulWidget {
-  const FavouriteScreen({super.key});
+  final FavouriteViewModel vm;
+  const FavouriteScreen({super.key,required this.vm});
 
   @override
   State<StatefulWidget> createState() => _FavouriteScreenWidget();
@@ -14,11 +15,15 @@ class FavouriteScreen extends StatefulWidget {
 
 class _FavouriteScreenWidget extends State<FavouriteScreen> {
 
-  final FavouriteViewModel vm = FavouriteViewModel();
+ late final  FavouriteViewModel vm;
   @override
   void initState() {
+    vm = widget.vm;
     super.initState();
     vm.isScreenDispose = false;
+    WidgetsBinding.instance.addPostFrameCallback((c){
+      vm.loadFavourites();
+    });
   }
 
   @override
@@ -66,13 +71,13 @@ class _FavouriteScreenWidget extends State<FavouriteScreen> {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: IconButton(
-                        onPressed: () {
+                      child: GestureDetector(
+                        onTap: () {
                           if (hit.id != null) {
                             vm.removeFavourite(hit.id!);
                           }
                         },
-                        icon: const Icon(Icons.favorite, color: Colors.red),
+                        child: const Icon(Icons.favorite, color: Colors.red),
                       ),
                     ),
                   ],

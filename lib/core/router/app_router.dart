@@ -6,6 +6,8 @@ import 'package:infinite_image_gallery_app/screens/favourite/favourite_screen.da
 import 'package:infinite_image_gallery_app/screens/home/home_screen.dart';
 import 'package:infinite_image_gallery_app/screens/splash/splash_screen.dart';
 
+import '../../screens/favourite/favourite_vm.dart';
+
 class AppRoutes {
   AppRoutes._();
 
@@ -39,7 +41,7 @@ final GoRouter appRouter = GoRouter(
       name: 'imageDetails',
       builder: (context, state) {
         return state.extra is Hits
-            ? ImageDetailScreen(hit: state as Hits)
+            ? ImageDetailScreen(hit: state.extra as Hits)
             : SizedBox();
       },
     ),
@@ -47,7 +49,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.favourite,
       name: 'favourite',
       builder: (context, state) {
-        return const FavouriteScreen();
+        return FavouriteScreen(
+          vm: state.extra is FavouriteViewModel
+              ? state.extra as FavouriteViewModel
+              : FavouriteViewModel(),
+        );
       },
     ),
   ],
